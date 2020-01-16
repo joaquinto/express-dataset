@@ -18,14 +18,8 @@ const streak = (events) => {
     aEvents.push(events[index]);
     streak = 0;
   });
-  const sortedStreak = sortStreak(aEvents);
+  const sortedStreak = sortEvent(aEvents, 'streak', 'created_at');
   return filterData(sortedStreak);
-}
-
-const sortStreak = (streak) => {
-  return streak.sort((a, b) => {
-    return (b.streak === a.streak) ? new Date(b.created_at) - new Date(a.created_at) : b.streak - a.streak;
-  });
 }
 
 const filterData = (data) => {
@@ -47,9 +41,9 @@ const getUniqueActor = (data) => {
     });
 }
 
-const sortEventCount = (events, ...condition) => {
+const sortEvent = (events, condition1, condition2) => {
   return events.sort((a, b) => {
-    return (b.eventCount === a.eventCount) ? new Date(b.created_at) - new Date(a.created_at) : b.eventCount - a.eventCount;
+    return (b[condition1] === a[condition1]) ? new Date(b[condition2]) - new Date(a[condition2]) : b[condition1] - a[condition1];
   });
 }
 
@@ -70,7 +64,7 @@ const getEventCount = (events) => {
     al.eventCount = counter;
     counter = 0;
   });
-  const actors = sortEventCount(actorList);
+  const actors = sortEvent(actorList, 'eventCount', 'created_at');
   cleanup(actors);
   return actors;
 }
