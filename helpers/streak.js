@@ -1,7 +1,6 @@
 const streak = (events) => {
   let aEvents = [];
   let streak = 0;
-  let temp = 0;
   events.forEach((event, index) => {
     if (index === events.length - 1) {
       if (event.actor.id === events[index - 1]) {
@@ -11,20 +10,16 @@ const streak = (events) => {
       const hours = Math.abs(new Date(event.created_at) - new Date(events[index + 1].created_at)) / 36e5;
       if (hours < 25) {
         streak += 1;
-        if (temp < streak) {
-          temp = streak;
-        }
       } else {
-        temp = 0;
         streak = 0;
       }
     }
-    event.streak = temp > streak ? temp : streak;
+    event.streak = streak;
     aEvents.push(events[index]);
-    temp = 0;
     streak = 0;
   });
-  return aEvents;
+  const sortedStreak = sortStreak(aEvents);
+  return filterData(sortedStreak);
 }
 
 const sortStreak = (streak) => {
@@ -33,12 +28,12 @@ const sortStreak = (streak) => {
   });
 }
 
-const streamlineData = (data) => {
+const filterData = (data) => {
   const eventData = [];
   data.forEach((events) => {
     eventData.push(events.actor);
   });
-  return eventData;
+  return getUniqueActor(eventData);
 }
 
 const getUniqueActor = (data) => {
@@ -54,7 +49,4 @@ const getUniqueActor = (data) => {
 
 module.exports = {
   streak: streak,
-  sortStreak: sortStreak,
-  streamlineData: streamlineData,
-  getUniqueActor: getUniqueActor
 }

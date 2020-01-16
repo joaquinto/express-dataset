@@ -51,11 +51,8 @@ const getStreak = (req, res, next) => {
 		if (!events.length) {
 			return res.status(404).json({ status_code: 404, error: new Error('Actors not found') });
 		}
-		const an = streak.streak(events);
-		const io = streak.sortStreak(an);
-		const mini = streak.streamlineData(io);
-		const result = streak.getUniqueActor(mini);
-		res.status(200).json({ status_code: 200, body: result });
+		const actorStreak = streak.streak(events);
+		res.status(200).json({ status_code: 200, body: actorStreak });
 	});
 }
 
