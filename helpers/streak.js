@@ -47,6 +47,42 @@ const getUniqueActor = (data) => {
     });
 }
 
+const sortEventCount = (events, ...condition) => {
+  return events.sort((a, b) => {
+    return (b.eventCount === a.eventCount) ? new Date(b.created_at) - new Date(a.created_at) : b.eventCount - a.eventCount;
+  });
+}
+
+const getEventCount = (events) => {
+  let actorList = [];
+  let counter = 0;
+  events.forEach((e) => {
+    actorList.push(e.actor);
+  });
+  actorList = getUniqueActor(actorList);
+  actorList.forEach((al) => {
+    events.forEach((e) => {
+      if (e.actor.login === al.login) {
+        counter += 1;
+        al.created_at = e.created_at;
+      }
+    });
+    al.eventCount = counter;
+    counter = 0;
+  });
+  const actors = sortEventCount(actorList);
+  cleanup(actors);
+  return actors;
+}
+
+const cleanup = (actors) => {
+  return actors.forEach((e) => {
+    delete e.created_at;
+    delete e.eventCount;
+  });
+}
+
 module.exports = {
   streak: streak,
+  getEventCount: getEventCount,
 }

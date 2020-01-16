@@ -16,16 +16,14 @@ const addActor = (req, res, next) => {
 };
 
 const getAllActors = (req, res, next) => {
-	store.actors.find({}, function(error, actors) {
+	store.events.find({}).sort({ actor: 1 }).exec(function(error, events) {
 		if (error) {
 			return next(error);
 		}
-		if (!actors) {
+		if (!events.length) {
 			return res.status(404).json({ status_code: 404, error: new Error('Actors not found') });
 		}
-		actors.forEach((actor) => {
-			delete actor._id;
-		});
+		const actors = streak.getEventCount(events);
 		return res.status(200).json({ status_code: 200, body: actors });
 	});
 };
@@ -45,7 +43,6 @@ const updateActor = (req, res, next) => {
 const getStreak = (req, res, next) => {
 	store.events.find({}).sort({ 'actor.login': 1 }).exec(function(error, events) {
 		if (error) {
-			console.log(error.detail)
 			return next(error);
 		}
 		if (!events.length) {
